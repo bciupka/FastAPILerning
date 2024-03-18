@@ -1,6 +1,5 @@
-from fastapi import FastAPI
-
-# from enum import Enum
+from fastapi import FastAPI, Query
+from typing import Annotated
 from pydantic import BaseModel
 
 app = FastAPI()
@@ -30,3 +29,13 @@ async def update_about(id: int, sample: Sample, new_about: str):
         put_sample = Sample(**{"name": "test", "score": 5})
         put_sample.about = new_about
         return put_sample
+
+
+@app.get("/tiny_query")
+async def query_valid(q: Annotated[str | None, Query(min_length=3, max_length=6)]):
+    return {"query_param": q}
+
+
+@app.get("/list_query")
+async def list_query(q: Annotated[list[str], Query()]):
+    return {"query_param": q}

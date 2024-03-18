@@ -45,9 +45,7 @@ async def read_enum(enum_model: ModelName):
 @app.get("/items/range/")
 async def get_range(stop: int | None = None, start: int = 0):
     items_to_response = (
-        fake_items_db[start:stop]
-        if stop is not None
-        else fake_items_db[start:]
+        fake_items_db[start:stop] if stop is not None else fake_items_db[start:]
     )
     return {"items": items_to_response}
 
