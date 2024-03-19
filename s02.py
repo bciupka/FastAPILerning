@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Query, Path
+from fastapi import FastAPI, Query, Path, Body
 from typing import Annotated
 from pydantic import BaseModel
 
@@ -9,6 +9,12 @@ class Sample(BaseModel):
     name: str
     score: int
     about: str | None = None
+
+
+class User(BaseModel):
+    first_name: str
+    last_name: str
+    email: str
 
 
 @app.post("/new_sample")
@@ -53,3 +59,23 @@ async def read_number(
     ]
 ):
     return {"message": add_msg, "number_ok": True}
+
+
+@app.post("/two_bodies")
+async def two_bodies(sample: Sample, user: User):
+    return {"sample": sample, "user": user}
+
+
+@app.post("/embed_in")
+async def embed_test(user: Annotated[User, Body(embed=True)]):
+    return {"user": user}
+
+
+@app.post("/not_embed_in")
+async def embed_test(user: User):
+    return {"user": user}
+
+
+@app.post("/model_and_single")
+async def embed_test(user: User, motto: Annotated[str, Body()]):
+    return {"user": user, "motto": motto}
