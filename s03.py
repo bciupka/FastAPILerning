@@ -9,11 +9,27 @@ class Country(BaseModel):
     name: str
     symbol: str | None = None
 
+    model_config = {
+        "json_schema_extra": {"examples": [{"name": "England", "symbol": "ENG"}]}
+    }
+
 
 class Author(BaseModel):
     first_name: str
     last_name: str
     country: Country
+
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "first_name": "John",
+                    "last_name": "Smith",
+                    "country": Country.model_config["json_schema_extra"]["examples"][0],
+                }
+            ]
+        }
+    }
 
 
 class Book(BaseModel):
@@ -52,3 +68,38 @@ async def add_operation(
     key_sum = list(body.keys())[0] + list(body.keys())[1]
     val_sum = list(body.values())[0] + list(body.values())[1]
     return {"key_sum": key_sum, "val_sum": val_sum}
+
+
+@app.post("/author_example")
+async def author_get(author: Author):
+    return author
+
+
+@app.post("/body_example")
+async def country_example(
+    country: Annotated[Country, Body(examples=[{"name": "Poland", "symbol": "PL"}])]
+):
+    return country
+
+
+@app.post("/openapi_example")
+async def country_openapi_example(
+    country: Annotated[
+        Country,
+        Body(
+            openapi_examples={
+                "polish": {
+                    "summary": "polish example",
+                    "description": "example for country: Poland",
+                    "value": {"name": "Poland", "symbol": "PL"},
+                },
+                "english": {
+                    "summary": "english example",
+                    "description": "example for country: England",
+                    "value": {"name": "England", "symbol": "ENG"},
+                },
+            }
+        ),
+    ]
+):
+    return country
