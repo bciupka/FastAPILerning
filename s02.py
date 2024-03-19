@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Query, Path, Body
 from typing import Annotated
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 app = FastAPI()
 
@@ -15,6 +15,12 @@ class User(BaseModel):
     first_name: str
     last_name: str
     email: str
+
+
+class RestrictiveUser(BaseModel):
+    first_name: Annotated[str, Field(max_length=10)]
+    last_name: Annotated[str, Field(max_length=12)]
+    age: Annotated[int | None, Field(gt=15)] = None
 
 
 @app.post("/new_sample")
@@ -79,3 +85,8 @@ async def embed_test(user: User):
 @app.post("/model_and_single")
 async def embed_test(user: User, motto: Annotated[str, Body()]):
     return {"user": user, "motto": motto}
+
+
+@app.post("/bounded_age_user")
+async def validate_age(user: RestrictiveUser):
+    return {"user": user}
