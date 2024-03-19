@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, Path
 from typing import Annotated
 from pydantic import BaseModel
 
@@ -39,3 +39,17 @@ async def query_valid(q: Annotated[str | None, Query(min_length=3, max_length=6)
 @app.get("/list_query")
 async def list_query(q: Annotated[list[str], Query()]):
     return {"query_param": q}
+
+
+@app.get("/10_to_15_only/{number}")
+async def read_number(
+    *,
+    add_msg: Annotated[str | None, Query(deprecated=True, max_length=5)] = "Hello",
+    number: Annotated[
+        int | float,
+        Path(
+            title="10<x<15", description="Pass number between 10 and 15", ge=10, le=15
+        ),
+    ]
+):
+    return {"message": add_msg, "number_ok": True}
