@@ -1,6 +1,10 @@
 from fastapi import FastAPI, Body
 from typing import Annotated
 from pydantic import BaseModel
+from uuid import UUID
+from decimal import Decimal
+from datetime import datetime, time, timedelta
+
 
 app = FastAPI()
 
@@ -103,3 +107,20 @@ async def country_openapi_example(
     ]
 ):
     return country
+
+
+@app.get("/types")
+async def types_demo(
+    time: time,
+    delta: timedelta,
+    date: datetime,
+    decimal: Decimal,
+    id: UUID,
+):
+    return {
+        "time": time,
+        "datetime_2d_ago": date - timedelta(days=2),
+        "timedetla_from_now": datetime.now() + delta,
+        "decimal": decimal,
+        "id": id,
+    }
