@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Body
+from fastapi import FastAPI, Body, Query
 from typing import Annotated
 from pydantic import BaseModel
 from uuid import UUID
@@ -124,3 +124,19 @@ async def types_demo(
         "decimal": decimal,
         "id": id,
     }
+
+
+@app.get("/frozen_bytes_postman")
+async def frp(
+    q: Annotated[frozenset[int] | None, Query()] = None,
+    q2: Annotated[bytes | None, Query()] = None,
+):
+    return {"set": q, "byte": q2}
+
+
+@app.post("/fb_swagger_body")
+async def frpost(
+    q: Annotated[frozenset[int] | None, Body()] = None,
+    q2: Annotated[bytes | None, Body()] = None,
+):
+    return {"set": q, "byte": q2}
