@@ -1,6 +1,6 @@
-from fastapi import FastAPI, status
+from fastapi import FastAPI, status, Form
 from pydantic import BaseModel, EmailStr
-from typing import Union
+from typing import Union, Annotated
 from http import HTTPStatus
 
 app = FastAPI()
@@ -70,3 +70,10 @@ async def get_stat_http():
 @app.get("/http_status_fastapi", status_code=status.HTTP_200_OK)
 async def get_stat_fast():
     return "OK"
+
+
+@app.post("/form_test")
+async def form_test(
+    f: Annotated[str, Form()], f2: Annotated[int | None, Form()] = None
+):
+    return {"f": f, "f2": f2}
