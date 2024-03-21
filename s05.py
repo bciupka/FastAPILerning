@@ -118,3 +118,13 @@ async def main():
 </body>
     """
     return HTMLResponse(content=content)
+
+
+@app.post("/forms_and_files")
+async def f_a_f(
+    file1: Annotated[bytes, File(description="First file")],
+    file2: Annotated[UploadFile, File(description="Second file")],
+    form: Annotated[str, Form()],
+):
+    file1_ret = file1.decode()[:5]
+    return {"concat": file1_ret + form + file2.filename}
