@@ -1,4 +1,5 @@
-from fastapi import FastAPI, status, Form
+from fastapi import FastAPI, status, Form, File, UploadFile
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, EmailStr
 from typing import Union, Annotated
 from http import HTTPStatus
@@ -17,7 +18,8 @@ class UserIn(BaseUser):
     password_2: str
 
 
-class UserOut(BaseUser): ...
+class UserOut(BaseUser):
+    pass
 
 
 class UserDB(BaseUser):
@@ -43,7 +45,7 @@ async def post_user(user: UserIn) -> UserOut | str:
 
 
 @app.post("/new_user_union", response_model=Union[UserOut, str])
-async def post_user(user: UserIn):
+async def post_user_u(user: UserIn):
     if user.password == user.password_2:
         db_user = save_to_db(user)
         return UserOut(**db_user.model_dump())
@@ -77,3 +79,42 @@ async def form_test(
     f: Annotated[str, Form()], f2: Annotated[int | None, Form()] = None
 ):
     return {"f": f, "f2": f2}
+
+
+@app.post("/add_file")
+async def file_add(file: Annotated[bytes, File(description="Cool file")]):
+    return {"filesize": len(file)}
+
+
+@app.post("/add_multi_uploadfiles")
+async def add_m_uf(files: list[UploadFile]):
+    return {
+        "names": [i.filename for i in files],
+        "content_type": [i.content_type for i in files],
+    }
+
+
+@app.post("/read_file")
+async def read_file(
+    file: Annotated[UploadFile, File(description="Upload file async read")],
+    signs: int = 5,
+):
+    first_signs = await file.read(signs)
+    return {"first_signs": first_signs}
+
+
+@app.get("/")
+async def main():
+    content = """
+<body>
+<form action="/add_file/" enctype="multipart/form-data" method="post">
+<input name="file" type="file">
+<input type="submit">
+</form>
+<form action="/add_multi_uploadfiles/" enctype="multipart/form-data" method="post">
+<input name="files" type="file" multiple>
+<input type="submit">
+</form>
+</body>
+    """
+    return HTMLResponse(content=content)
