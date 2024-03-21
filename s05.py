@@ -1,6 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, status
 from pydantic import BaseModel, EmailStr
 from typing import Union
+from http import HTTPStatus
 
 app = FastAPI()
 
@@ -54,3 +55,18 @@ async def read_users() -> list[UserOut]:
     user1 = UserOut(login="asd", email="ds@fg.pl")
     user2 = UserOut(login="asdsd", email="dssss@fsda.pl", about="tralala")
     return user1, user2
+
+
+@app.get("/http_status", status_code=200)
+async def get_stat():
+    return "OK"
+
+
+@app.get("/http_status_http", status_code=HTTPStatus.OK)
+async def get_stat_http():
+    return "OK"
+
+
+@app.get("/http_status_fastapi", status_code=status.HTTP_200_OK)
+async def get_stat_fast():
+    return "OK"
