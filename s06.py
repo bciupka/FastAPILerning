@@ -5,6 +5,8 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.exception_handlers import request_validation_exception_handler
 from pydantic import BaseModel
 from enum import Enum
+from fastapi.encoders import jsonable_encoder
+import json
 
 app = FastAPI()
 
@@ -109,3 +111,11 @@ async def test_conf():
 )
 async def test_conf_2():
     return {"message:" "no users"}
+
+
+@app.get("/jsonable_test")
+async def jsonable_test():
+    item = Item(name="test", qty=5)
+    item_json = jsonable_encoder(item)
+    item_json.update(addon="test")
+    return json.dumps(item_json)
