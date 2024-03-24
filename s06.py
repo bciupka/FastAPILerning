@@ -4,8 +4,14 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi.exceptions import RequestValidationError
 from fastapi.exception_handlers import request_validation_exception_handler
 from pydantic import BaseModel
+from enum import Enum
 
 app = FastAPI()
+
+
+class Tags(Enum):
+    item = "Item"
+    user = "User"
 
 
 class MyException(Exception):
@@ -75,3 +81,31 @@ async def error_test(q: int):
 @app.post("/valid_mod")
 async def v_mod(item: Item):
     return item
+
+
+@app.get(
+    "/path_opeartion_conf",
+    response_model=Item,
+    status_code=200,
+    tags=[Tags.item],
+    summary="Test path configuration",
+    response_description="Instance of Item",
+)
+async def test_conf():
+    """_Test endpoint fot testing parameters of path operation function decorator_
+
+    Returns:
+        _Item_: _Item instance with predifined attributes_
+    """
+    return Item(name="test", qty=10, about="test item")
+
+
+@app.get(
+    "/path_opeartion_conf_2",
+    status_code=200,
+    tags=[Tags.user],
+    description="Not useful endpoint",
+    deprecated=True,
+)
+async def test_conf_2():
+    return {"message:" "no users"}
