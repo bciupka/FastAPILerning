@@ -101,3 +101,21 @@ UpdateModelClass = Annotated[UpdatePandanticModel, Depends()]
 @app.put("/sample_class_put")
 async def sample_class_put(commons: UpdateModelClass):
     return {"updated": True, "method": "PUT w/ Class"}
+
+
+async def test_sub_dependency(q: str | int | None = None):
+    return q
+
+
+async def test_dependency(
+    q: Annotated[str | int | None, Depends(test_sub_dependency)],
+    alt_q: str | int | None = None,
+):
+    if q:
+        return q
+    return alt_q
+
+
+@app.get("/test_sub_dependency", summary="Test that sub_dep")
+async def test_sub_dep(q_or_alt: Annotated[str | int | None, Depends(test_dependency)]):
+    return q_or_alt
