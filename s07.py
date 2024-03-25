@@ -18,6 +18,15 @@ class UpdateBook(Book):
     author: str | None = None
 
 
+class UpdatePandanticModel:
+    def __init__(
+        self, model_id: str | int, update_model: BaseModel, log: bool = False
+    ) -> None:
+        self.model_id = model_id
+        self.update_model = update_model
+        self.log = log
+
+
 books = {
     "first": {"title": "first book", "author": "Xander Lang", "available": True},
     "second": {"title": "second book", "author": "Jack Smith"},
@@ -84,3 +93,11 @@ UpdateAdmin = Annotated[dict, Depends(update_pydantic_admin)]
 @app.put("/sample_sub_put")
 async def sample_sub_put(commons: UpdateAdmin):
     return {"updated": True, "method": "PUT w/ Admin"}
+
+
+UpdateModelClass = Annotated[UpdatePandanticModel, Depends()]
+
+
+@app.put("/sample_class_put")
+async def sample_class_put(commons: UpdateModelClass):
+    return {"updated": True, "method": "PUT w/ Class"}
