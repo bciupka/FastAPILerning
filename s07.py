@@ -1,6 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
+from typing import Annotated
 
 app = FastAPI()
 
@@ -52,3 +53,34 @@ async def patch_book(book_id: str, book: UpdateBook) -> Book:
     updated_book = Book(**books[book_id]).model_copy(update=updated_data)
     books[book_id] = jsonable_encoder(updated_book)
     return updated_book
+
+
+async def update_pydantic_model(
+    model_id: str | int, update_model: BaseModel, log: bool = False
+):
+    return {"model_id": model_id, "update_model": update_model, "log": log}
+
+
+UpdateModel = Annotated[dict, Depends(update_pydantic_model)]
+
+
+@app.put("/sample_put")
+async def sample_put(commons: UpdateModel):
+    return {"updated": True, "method": "PUT"}
+
+
+@app.patch("/sample_patch")
+async def sample_patch(commons: UpdateModel):
+    return {"updated": True, "method": "PATCH"}
+
+
+async def update_pydantic_admin(commons: UpdateModel, password: str):
+    return {**commons, "password": password}
+
+
+UpdateAdmin = Annotated[dict, Depends(update_pydantic_admin)]
+
+
+@app.put("/sample_sub_put")
+async def sample_sub_put(commons: UpdateAdmin):
+    return {"updated": True, "method": "PUT w/ Admin"}
