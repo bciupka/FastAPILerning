@@ -1,7 +1,13 @@
 from fastapi import FastAPI, Depends, status, HTTPException, Header
 from typing import Annotated
 
-app = FastAPI()
+
+async def dependency_3(token: str):
+    if token != "09871234":
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED)
+
+
+app = FastAPI(dependencies=[Depends(dependency_3)])
 
 
 async def dependency_1(id: int, desc: str):
