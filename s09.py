@@ -23,20 +23,23 @@ fake_db_users = {
         "login": "alias10",
         "email": "alias10@random.org",
         "about": "im cool",
-        "hashed_pwd": "$2y$10$32Wj.hgGPquOMvP5WddAe.Z5gl2iFWMrXIy.UrvZOdggoUH0gZBVW",  # 123
+        "hashed_pwd": "$2y$10$32Wj.hgGPquOMvP5WddAe.Z5gl2iFWMrXIy.UrvZOdggoUH0gZBVW",
+        # 123
     },
     "beta5": {
         "login": "beta5",
         "email": "beta5@random.org",
         "about": "im very cool",
-        "hashed_pwd": "$2y$10$CS9kv2Tj0yrBk1CK2KbbPOEMLJ3Hs43Nj54Zo1vv8H4hjjkKq8Ina",  # 321
+        "hashed_pwd": "$2y$10$CS9kv2Tj0yrBk1CK2KbbPOEMLJ3Hs43Nj54Zo1vv8H4hjjkKq8Ina",
+        # 321
     },
     "delta4": {
         "login": "delta4",
         "email": "delta4@random.org",
         "about": "im not really cool",
         "active": False,
-        "hashed_pwd": "$2y$10$edQljSFBke6/kKDXXcnok.nh/srW87/Jg0cFyxa0MJctsuhEnX0mu",  # 000
+        "hashed_pwd": "$2y$10$edQljSFBke6/kKDXXcnok.nh/srW87/Jg0cFyxa0MJctsuhEnX0mu",
+        # 000
     },
 }
 
