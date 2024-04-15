@@ -1,5 +1,6 @@
 import dependencies
 from fastapi import FastAPI, Depends, BackgroundTasks
+from fastapi.staticfiles import StaticFiles
 from routers import users, items
 from internal import admin
 from typing import Annotated
@@ -27,6 +28,7 @@ app = FastAPI(
     openapi_tags=tags_metadata,
     redoc_url=None,
 )
+app.mount("/static", StaticFiles(directory="static"), name="static")
 app.include_router(users.router)
 app.include_router(items.router)
 app.include_router(admin.router, prefix="/admin", tags=["admin"])
