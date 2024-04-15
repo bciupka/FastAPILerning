@@ -4,7 +4,29 @@ from routers import users, items
 from internal import admin
 from typing import Annotated
 
-app = FastAPI()
+tags_metadata = [
+    {
+        "name": "users",
+        "description": "Users endpoints",
+        "externalDocs": {"url": "https://fastapi.tiangolo.com/tutorial/metadata/"},
+    },
+    {"name": "items", "description": "Items endpoints"},
+]
+
+app = FastAPI(
+    title="S12 Guide API",
+    summary="S12 guide chapter API",
+    description="Thats a API developed for training **FastAPI** - S12 with BG Tasks, *Metadata* and multiple files applications",
+    version="1.0.2",
+    contact={"name": "BC", "email": "bc@email.com"},
+    terms_of_service="https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api",
+    license_info={
+        "name": "Apache Licence 2.0",
+        "identifier": "Apache-2.0",
+    },
+    openapi_tags=tags_metadata,
+    redoc_url=None,
+)
 app.include_router(users.router)
 app.include_router(items.router)
 app.include_router(admin.router, prefix="/admin", tags=["admin"])
