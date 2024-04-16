@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Header, HTTPException, status, Path
 from typing import Annotated
 from pydantic import BaseModel, Field
+import uvicorn
 
 app = FastAPI()
 
@@ -24,3 +25,7 @@ async def get_item(id: Annotated[int, Path(lt=10)]) -> DataIn:
         raise HTTPException(status.HTTP_404_NOT_FOUND)
     fictional_item = DataIn(name="test", qty=8, address="test_place")
     return fictional_item
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
